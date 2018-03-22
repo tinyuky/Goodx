@@ -9,24 +9,19 @@ use App\Question;
 
 class QuestionController extends Controller
 {
-    //show import page
-    public function show()
-    {
-        return view('prio2.catelog.catelogpage');
-    }
 
-    //handle json file
+    //handle import json file
     public function import(Request $request)
     {
-        //condition when fill url
-        $condition=[
+        //condition of url
+        $condition = [
           'url' => 'required',
         ];
         //message for error
         $messages = [
           'required' => 'You must fill the json file url',
         ];
-        //validate
+        //validate url
         $this->validate($request, $condition,$messages);
 
         //delete old data in database
@@ -44,10 +39,10 @@ class QuestionController extends Controller
                                         ,'explanation'=>$data[$i]['explanation']
                                           ,'source'=>$data[$i]['source']]);
           //answer table
-          //if this is a 3 answers question
+          //if this is a many answers question
           if(isset($data[$i]['answers'])){
             foreach($data[$i]['answers'] as $as){
-              if($data[$i]['answer']== $as){
+              if($data[$i]['answer'] == array_search($as,$data[$i]['answers'])){
                 $answer = Answer::create(['question_id'=>$question->id
                                               ,'answer'=>$as
                                                 ,'correct'=>1]);
@@ -70,8 +65,8 @@ class QuestionController extends Controller
 
         }
 
-        //return welcome page after creating data rows
-        return route('quiz.welcome');
+        //return welcome page
+        return redirect(route('quiz.welcome'));
 
     }
 

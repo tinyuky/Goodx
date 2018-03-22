@@ -15,7 +15,9 @@ Route::prefix('prio1')->group(function(){
 });
 Route::prefix('prio2')->group(function(){
   Route::post('ques','QuestionController@import')->name('ques.import');
-  Route::get('welcome','QuizController@welcome')->name('quiz.welcome');
-  Route::get('quiz','QuizController@show')->name('quiz.show');
-  Route::post('quiz','QuizController@submit')->name('quiz.submit');
+  Route::get('welcome','QuizController@welcomeQuiz')->name('quiz.welcome');
+  Route::get('quiz','QuizController@showQuiz')->name('quiz.show');
+  Route::post('quiz','QuizController@submitQuiz')->name('quiz.submit');
+  Route::post('finish','QuizController@finishQuiz')->name('quiz.finish');
+  Route::get('result','QuizController@showResult')->name('quiz.result');
 });

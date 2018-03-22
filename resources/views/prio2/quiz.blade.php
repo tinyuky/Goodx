@@ -5,58 +5,48 @@
         <h2>QUIZ</h2>
         <p class="lead">Below is your quiz. Good luck</p>
       </div>
-
       <div class="row">
         <div class="col-md-12 order-md-2 mb-4">
-          <form class="needs-validation" novalidate>
-            @for($i=0;$i<5;$i++)
+          <form action="{{route('quiz.submit')}}" method="post">
+            {!! csrf_field() !!}
+            @foreach($data as $data)
             <hr class="mb-12">
-            <h4 class="mb-12">{{$data[$i]['question']->question}}</h4>
+            <h4 class="mb-12"
+                  style="{{ $errors->has('q'.$data['question']->id)?'color:red':''}}">
+              {{$data['question']->question}}
+            </h4>
             <div class="d-block my-12">
-              @if(count($data[$i]['ans'])==3)
-                @foreach($data[$i]['ans'] as $ans)
+              @if(count($data['ans'])==3)
+                @foreach($data['ans'] as $ans)
                 <div class="custom-control custom-radio">
-                  <input id="{{$ans->id}}" name="ques{{$i}}" type="radio" class="custom-control-input" value="" required>
+                  <input id="{{$ans->id}}" name="q{{$data['question']->id}}"
+                      type="radio" class="custom-control-input"
+                        value="{{$ans->id}}"
+                          {{old('q'.$data['question']->id)==$ans->id ? 'checked' :''}}>
                   <label class="custom-control-label" for="{{$ans->id}}">{{$ans->answer}}</label>
                 </div>
                 @endforeach
               @else
               <div class="custom-control custom-radio">
-                <input id="{{$data[$i]['ans'][0]->id}}" name="ques{{$i}}" type="radio" class="custom-control-input" value="" required>
-                <label class="custom-control-label" for="{{$data[$i]['ans'][0]->id}}">TRUE</label>
+                <input id="{{$data['ans'][0]->id}}T" name="q{{$data['question']->id}}"
+                      type="radio" class="custom-control-input"
+                        value="TRUE"
+                          {{old('q'.$data['question']->id)=='TRUE' ? 'checked' :''}}>
+                <label class="custom-control-label" for="{{$data['ans'][0]->id}}T">TRUE</label>
               </div>
               <div class="custom-control custom-radio">
-                <input id="{{$data[$i]['ans'][0]->id}}" name="ques{{$i}}" type="radio" class="custom-control-input" value="" required>
-                <label class="custom-control-label" for="{{$data[$i]['ans'][0]->id}}">FALSE</label>
+                <input id="{{$data['ans'][0]->id}}F" name="q{{$data['question']->id}}"
+                      type="radio" class="custom-control-input"
+                        value="FALSE"
+                          {{old('q'.$data['question']->id)=='FALSE' ? 'checked' :''}}>
+                <label class="custom-control-label" for="{{$data['ans'][0]->id}}F">FALSE</label>
               </div>
               @endif
             <hr class="mb-4">
-            @endfor
+            @endforeach
             <button class="btn btn-primary btn-lg btn-block" type="submit">Submit quiz</button>
-            </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
-    <script>
-      // Example starter JavaScript for disabling form submissions if there are invalid fields
-      (function() {
-        'use strict';
-
-        window.addEventListener('load', function() {
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          var forms = document.getElementsByClassName('needs-validation');
-
-          // Loop over them and prevent submission
-          var validation = Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('submit', function(event) {
-              if (form.checkValidity() === false) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              form.classList.add('was-validated');
-            }, false);
-          });
-        }, false);
-      })();
-    </script>
 @endsection
