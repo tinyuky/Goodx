@@ -1,5 +1,6 @@
 @extends('layouts')
 @extends('prio1.show')
+@extends('prio1.token')
 @section('content')
 <template>
 <div class="container">
@@ -7,7 +8,7 @@
         <h2>QUIZ</h2>
         <p class="lead">Below is your quiz. Good luck</p>
       </div>
-      <form v-on:submit="saveForm()">
+      <form @submit.prevent="validateBeforeSubmit">
       <div class="row">
         <div class="col-md-12 order-md-2 mb-4" v-for="data in datas">
             <hr class="mb-12">
@@ -18,28 +19,28 @@
                         v-for="answer in data.answer">
                   <input :id="answer.id" :name="data.id"
                       type="radio" class="custom-control-input"
-                        :value="answer.id" :v-model="data.id">
+                        :value="answer.id" :v-model="data.id" v-validate="'required'">
                   <label class="custom-control-label" :for="answer.id">{{answer.answer}}</label>
                 </div>
                 <div v-else>
                   <div class="custom-control custom-radio">
-                    <input id="true" :name="data.id"
+                    <input :id="data.id+'true'" :name="data.id"
                         type="radio" class="custom-control-input"
-                          value="TRUE" :v-model="data.id">
-                    <label class="custom-control-label" for="true">TRUE</label>
+                          value="TRUE" :v-model="data.id" v-validate="'required'">
+                    <label class="custom-control-label" :for="data.id+'true'">TRUE</label>
                   </div>
                   <div class="custom-control custom-radio">
-                    <input id="false" :name="data.id"
+                    <input :id="data.id+'false'" :name="data.id"
                         type="radio" class="custom-control-input"
-                          value="FALSE" :v-model="data.id">
-                    <label class="custom-control-label" for="false">FALSE</label>
+                          value="FALSE" :v-model="data.id" v-validate="'required'">
+                    <label class="custom-control-label" :for="data.id+'false'">FALSE</label>
                   </div>
                 </div>
               <hr class="mb-4">
           </div>
         </div>
     </div>
-    <button class="btn btn-primary btn-lg btn-block" type="submit">Submit quiz</button>
+    <button type="submit" class="btn btn-primary btn-block" name="button">Apply</button>
   </form>
   </div>
 </template>
@@ -60,7 +61,22 @@ export default {
               console.log(resp);
               alert("Could not load quiz");
           });
+  },
+  methods: {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          alert('Form Submitted!');
+          return;
+        }
+        alert('Please answer all question');
+      });
+    }
   }
 }
+
+
+
+
 </script>
 @endsection

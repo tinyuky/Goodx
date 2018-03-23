@@ -7,7 +7,7 @@
         <h2>QUIZ</h2>
         <p class="lead">Below is your quiz. Good luck</p>
       </div>
-      <form v-on:submit="saveForm()">
+      <form v-on:submit="submitForm()">
       <div class="row">
         <div class="col-md-12 order-md-2 mb-4" v-for="data in datas">
             <hr class="mb-12">
@@ -47,7 +47,8 @@
 export default {
   data: function () {
       return {
-          datas: []
+          datas: [],
+          error: []
       }
   },
   mounted() {
@@ -60,6 +61,9 @@ export default {
               console.log(resp);
               alert("Could not load quiz");
           });
+  },
+  method:{
+      submitForm
   }
 }
 </script>

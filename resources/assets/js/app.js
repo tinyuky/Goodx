@@ -8,8 +8,10 @@
 
  window.Vue = require('vue');
  import VueRouter from 'vue-router';
-
+ import VeeValidate from 'vee-validate';
+ import Vue from 'vue';
  window.Vue.use(VueRouter);
+ Vue.use(VeeValidate);
 
  import welcomeQuiz from './components/quiz/welcomeQuiz.vue';
  import showQuiz from './components/quiz/showQuiz.vue';
