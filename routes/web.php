@@ -10,10 +10,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::prefix('prio1')->group(function(){
+Route::prefix('prio1')->namespace('Prio1')->group(function(){
+  
 
 });
-Route::prefix('prio2')->group(function(){
+Route::prefix('prio2')->namespace('Prio2')->group(function(){
   Route::post('ques','QuestionController@import')->name('ques.import');
   Route::get('welcome','QuizController@welcomeQuiz')->name('quiz.welcome');
   Route::get('quiz','QuizController@showQuiz')->name('quiz.show');
