@@ -11,8 +11,7 @@
 |
 */
 Route::prefix('prio1')->namespace('Prio1')->group(function(){
-  
-
+  Route::get('welcome','QuizController@welcome');
 });
 Route::prefix('prio2')->namespace('Prio2')->group(function(){
   Route::post('ques','QuestionController@import')->name('ques.import');
