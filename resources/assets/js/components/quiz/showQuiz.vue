@@ -1,7 +1,4 @@
-@extends('layouts')
-@extends('prio1.show')
-@extends('prio1.token')
-@section('content')
+
 <template>
 <div class="container">
       <div class="py-5 text-center">
@@ -10,7 +7,7 @@
       </div>
       <form @submit.prevent="validateBeforeSubmit">
       <div class="row">
-        <div class="col-md-12 order-md-2 mb-4" v-for="data in datas">
+        <div class="col-md-12 order-md-2 mb-4" v-for="(data,n) in datas">
             <hr class="mb-12">
             <h4 class="mb-12">{{data.question}}</h4>
             <div class="d-block my-12">
@@ -19,20 +16,20 @@
                         v-for="answer in data.answer">
                   <input :id="answer.id" :name="data.id"
                       type="radio" class="custom-control-input"
-                        :value="answer.id" :v-model="data.id" v-validate="'required'">
+                        :value="answer.id" v-model="count[n]" v-validate="'required'">
                   <label class="custom-control-label" :for="answer.id">{{answer.answer}}</label>
                 </div>
                 <div v-else>
                   <div class="custom-control custom-radio">
                     <input :id="data.id+'true'" :name="data.id"
                         type="radio" class="custom-control-input"
-                          value="TRUE" :v-model="data.id" v-validate="'required'">
+                          :value="data.answer[0].id+'-TRUE'" v-model="count[n]" v-validate="'required'">
                     <label class="custom-control-label" :for="data.id+'true'">TRUE</label>
                   </div>
                   <div class="custom-control custom-radio">
                     <input :id="data.id+'false'" :name="data.id"
                         type="radio" class="custom-control-input"
-                          value="FALSE" :v-model="data.id" v-validate="'required'">
+                          :value="data.answer[0].id+'-FALSE'" v-model="count[n]" v-validate="'required'">
                     <label class="custom-control-label" :for="data.id+'false'">FALSE</label>
                   </div>
                 </div>
@@ -40,6 +37,7 @@
           </div>
         </div>
     </div>
+
     <button type="submit" class="btn btn-primary btn-block" name="button">Apply</button>
   </form>
   </div>
@@ -48,7 +46,8 @@
 export default {
   data: function () {
       return {
-          datas: []
+          datas: [],
+          count: []
       }
   },
   mounted() {
@@ -64,19 +63,24 @@ export default {
   },
   methods: {
     validateBeforeSubmit() {
+      var app = this;
       this.$validator.validateAll().then((result) => {
         if (result) {
-          alert('Form Submitted!');
-          return;
+          axios.post('/api/check', app.count)
+                    .then(function (resp) {
+                        console.log(resp);
+                        app.$router.push({ path:'/result/'+ resp.data["result"] });
+                    })
+                    .catch(function (resp) {
+                        console.log(resp);
+                        alert("Error!");
+                    });
         }
-        alert('Please answer all question');
+        else{
+          alert('Please answer all question','Gooqx');
+        }
       });
     }
   }
 }
-
-
-
-
 </script>
-@endsection

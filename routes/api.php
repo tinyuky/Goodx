@@ -19,4 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group(['namespace'=>'prio1'],function(){
   Route::get('show','QuizController@show')->name('quiz.show');
+  Route::post('check','QuizController@check');
+  Route::post('create','QuizController@createUser');
+  Route::post('getuser','QuizController@getUser');
+  Route::post('getnewuser','QuizController@getNewUser');
 });

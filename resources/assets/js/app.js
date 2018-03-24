@@ -10,15 +10,20 @@
  import VueRouter from 'vue-router';
  import VeeValidate from 'vee-validate';
  import Vue from 'vue';
+
  window.Vue.use(VueRouter);
  Vue.use(VeeValidate);
 
  import welcomeQuiz from './components/quiz/welcomeQuiz.vue';
  import showQuiz from './components/quiz/showQuiz.vue';
+ import resultQuiz from './components/quiz/resultQuiz.vue';
+ import thankQuiz from './components/quiz/thankQuiz.vue';
 
  const routes = [
-     {path: '/', component: welcomeQuiz, name: 'welcome'},
-     {path: '/show', component: showQuiz, name: 'show'},
+     {path: '/', component: welcomeQuiz, name: 'quiz-welcome'},
+     {path: '/show', component: showQuiz, name: 'quiz-show'},
+     {path: '/result/:correct', component: resultQuiz, name: 'quiz-result'},
+     {path: '/thank', component: thankQuiz, name: 'quiz-thank'}
  ]
  const router = new VueRouter({ routes })
 
