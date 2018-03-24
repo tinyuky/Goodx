@@ -27,10 +27,13 @@
         }
     },
     methods:{
+      //validate user input
       validateBeforeSubmit() {
         var app = this;
         app.$validator.validateAll().then((result) => {
+          //no error
           if (result) {
+            // create user api
             axios.post('/api/create', app.user)
                       .then(function (resp) {
                           app.$router.push({ name : 'quiz-thank' });
@@ -40,6 +43,7 @@
                           alert("Error!");
                       });
           }
+          //show error
           else{
             alert('Please fill all information');
           }

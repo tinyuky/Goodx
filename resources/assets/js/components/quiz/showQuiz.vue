@@ -7,7 +7,7 @@
       </div>
       <form @submit.prevent="validateBeforeSubmit">
       <div class="row">
-        <div class="col-md-12 order-md-2 mb-4" v-for="(data,n) in datas">
+        <div class="col-md-12 order-md-2 mb-4" v-for="(data,n) in quiz">
             <hr class="mb-12">
             <h4 class="mb-12">{{data.question}}</h4>
             <div class="d-block my-12">
@@ -46,15 +46,16 @@
 export default {
   data: function () {
       return {
-          datas: [],
+          quiz: [],
           count: []
       }
   },
   mounted() {
       var app = this;
+      //get quiz from api
       axios.get('/api/show')
           .then(function (resp) {
-              app.datas = resp.data;
+              app.quiz = resp.data;
           })
           .catch(function (resp) {
               console.log(resp);
@@ -62,13 +63,15 @@ export default {
           });
   },
   methods: {
+    //validate quiz
     validateBeforeSubmit() {
       var app = this;
       this.$validator.validateAll().then((result) => {
+        //no error
         if (result) {
           axios.post('/api/check', app.count)
                     .then(function (resp) {
-                        console.log(resp);
+                        //resirect to result component
                         app.$router.push({ path:'/result/'+ resp.data["result"] });
                     })
                     .catch(function (resp) {
@@ -76,6 +79,7 @@ export default {
                         alert("Error!");
                     });
         }
+        //show error
         else{
           alert('Please answer all question','Gooqx');
         }

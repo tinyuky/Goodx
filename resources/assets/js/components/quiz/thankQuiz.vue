@@ -43,6 +43,7 @@
       },
       mounted(){
         var app = this;
+        //get user from api
         axios.post('/api/getuser')
             .then(function (resp) {
                 app.users = resp.data;
@@ -51,6 +52,7 @@
                 console.log(resp);
                 alert("Could not load user");
             });
+        // get newest user from api
         axios.post('/api/getnewuser')
               .then(function (resp){
                 app.you = resp.data;

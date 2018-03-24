@@ -11,82 +11,105 @@ use App\User;
 
 class QuizController extends Controller
 {
-    function welcome(){
-      return view('prio1.index');
+    //handle welcome page
+    public function welcome()
+    {
+        return view('prio1.index');
     }
 
 
-    //random questions and answer function
+    //function random questions and answer
     //$q = number of question
     //$a = maximum answers of a question
-    function randomQuiz($q,$a){
-      $data = array();
-      //random question from db
-      $questions = DB::table('questions')
-                    ->select('id','question')
+    public function randomQuiz($q, $a)
+    {
+        $data = array();
+        //random question from db
+        $questions = DB::table('questions')
+                    ->select('id', 'question')
                       ->inRandomOrder()
                         ->limit($q)
                           ->get();
-      //random answer of question
-      foreach ($questions as $questions) {
-        $answer = DB::table('answers')
-                    ->select('id','answer')
-                      ->where('question_id',$questions->id)
+        //random answer of question
+        foreach ($questions as $questions) {
+            $answer = DB::table('answers')
+                    ->select('id', 'answer')
+                      ->where('question_id', $questions->id)
                         ->inRandomOrder()
                           ->limit($a)
                             ->get();
-        //add question and answer to array
-        $data[]=[
-          'id'=>$questions->id,
-          'question'=>$questions->question,
-          'answer'=>$answer,
-        ];
-      }
-      //return array
-      return $data;
+            //add question and answer to array
+            $data[]=[
+            'id'=>$questions->id,
+            'question'=>$questions->question,
+            'answer'=>$answer,
+          ];
+        }
+        //return array
+        return $data;
     }
 
-    function show(Request $request){
 
-        $data = $this->randomQuiz(5,3);
+    //Quiz API
+    public function show(Request $request)
+    {
+        $data = $this->randomQuiz(5, 3);
 
-      return response()->json($data);
+        return response()->json($data);
     }
 
-    function check(Request $request){
-      $result=0;
-      for($i=0;$i<5;$i++){
-        $id = explode("-",$request->request->get($i));
-        if(count($id)==1){
-          $check = Answer::where('id',$request->request->get($i))
-                          ->where('correct','1')
+    //Result API
+    public function check(Request $request)
+    {
+        $result=0;
+        //Quiz has 5 questions so use for with i < 5
+        for ($i=0;$i<5;$i++) {
+
+            //normal id: "123" and true-false id: "123-TRUE"
+            // explode the input to get id like id in database
+            $id = explode("-", $request->request->get($i));
+
+            //if it is a normal id
+            if (count($id)==1) {
+                //select from db
+                $check = Answer::where('id', $request->request->get($i))
+                          ->where('correct', '1')
                             ->first();
-          if(isset($check)){
-            $result++;
-          }
-        }
-        else{
-          $check = Answer::where('id',$id[0])
-                          ->where('correct','1')
-                            ->where('answer',$id[1])
+
+                if (isset($check)) {
+                    $result++;
+                }
+                //if it is a true-false id
+            } else {
+                //select from db
+                $check = Answer::where('id', $id[0])
+                          ->where('correct', '1')
+                            ->where('answer', $id[1])
                               ->first();
-          if(isset($check)){
-            $result++;
-          }
+                if (isset($check)) {
+                    $result++;
+                }
+            }
         }
-      }
-      return response()->json(['result'=>$result]);
+
+        return response()->json(['result'=>$result]);
     }
 
-    function createUser(Request $request){
+    //new User function
+    public function createUser(Request $request)
+    {
         $user = User::create($request->all());
     }
 
-    function getUser(){
-      return User::orderBy('score','desc')->get();
+    //get all User API
+    public function getUser()
+    {
+        return User::orderBy('score', 'desc')->get();
     }
 
-    function getNewUser(){
-      return User::latest()->first();
+    //get lastest user API
+    public function getNewUser()
+    {
+        return User::latest()->first();
     }
 }

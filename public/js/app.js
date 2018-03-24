@@ -57066,14 +57066,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            datas: [],
+            quiz: [],
             count: []
         };
     },
     mounted: function mounted() {
         var app = this;
+        //get quiz from api
         axios.get('/api/show').then(function (resp) {
-            app.datas = resp.data;
+            app.quiz = resp.data;
         }).catch(function (resp) {
             console.log(resp);
             alert("Could not load quiz");
@@ -57081,20 +57082,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        //validate quiz
         validateBeforeSubmit: function validateBeforeSubmit() {
             var app = this;
             this.$validator.validateAll().then(function (result) {
+                //no error
                 if (result) {
                     axios.post('/api/check', app.count).then(function (resp) {
-                        console.log(resp);
+                        //resirect to result component
                         app.$router.push({ path: '/result/' + resp.data["result"] });
                     }).catch(function (resp) {
                         console.log(resp);
                         alert("Error!");
                     });
-                } else {
-                    alert('Please answer all question', 'Gooqx');
                 }
+                //show error
+                else {
+                        alert('Please answer all question', 'Gooqx');
+                    }
             });
         }
     }
@@ -57125,7 +57130,7 @@ var render = function() {
         _c(
           "div",
           { staticClass: "row" },
-          _vm._l(_vm.datas, function(data, n) {
+          _vm._l(_vm.quiz, function(data, n) {
             return _c("div", { staticClass: "col-md-12 order-md-2 mb-4" }, [
               _c("hr", { staticClass: "mb-12" }),
               _vm._v(" "),
@@ -57421,19 +57426,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
   methods: {
+    //validate user input
     validateBeforeSubmit: function validateBeforeSubmit() {
       var app = this;
       app.$validator.validateAll().then(function (result) {
+        //no error
         if (result) {
+          // create user api
           axios.post('/api/create', app.user).then(function (resp) {
             app.$router.push({ name: 'quiz-thank' });
           }).catch(function (resp) {
             console.log(resp);
             alert("Error!");
           });
-        } else {
-          alert('Please fill all information');
         }
+        //show error
+        else {
+            alert('Please fill all information');
+          }
       });
     }
   }
@@ -57651,12 +57661,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     mounted: function mounted() {
         var app = this;
+        //get user from api
         axios.post('/api/getuser').then(function (resp) {
             app.users = resp.data;
         }).catch(function (resp) {
             console.log(resp);
             alert("Could not load user");
         });
+        // get newest user from api
         axios.post('/api/getnewuser').then(function (resp) {
             app.you = resp.data;
         }).catch(function (resp) {
